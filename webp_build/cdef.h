@@ -49,6 +49,7 @@ struct WebPPicture {
   int height;
   WebPWriterFunction writer;
   void* custom_ptr;
+  int error_code;
   ...;
 };
 
@@ -109,6 +110,7 @@ typedef struct WebPDecoderConfig WebPDecoderConfig;
 struct WebPConfig {
   int lossless;
   float quality;
+  int method;
   ...;
 };
 typedef struct WebPConfig WebPConfig;
@@ -167,6 +169,7 @@ VP8StatusCode WebPDecode(const uint8_t* data, size_t data_size,
   WebPDecoderConfig* config);
 void WebPFreeDecBuffer(WebPDecBuffer* buffer);
 
+int WebPConfigInit(WebPConfig* config);
 int WebPConfigPreset(WebPConfig* config, WebPPreset preset, float quality);
 int WebPValidateConfig(const WebPConfig* config);
 

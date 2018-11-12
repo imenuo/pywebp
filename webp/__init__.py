@@ -37,7 +37,10 @@ class WebPError(Exception):
 
 
 class WebPConfig:
-    def __init__(self, ptr):
+    def __init__(self, ptr=None):
+        if ptr is None:
+            ptr = ffi.new('WebPConfig*')
+            lib.WebPConfigInit(ptr)
         self.ptr = ptr
 
     @property
@@ -55,6 +58,14 @@ class WebPConfig:
     @quality.setter
     def quality(self, quality):
         self.ptr.quality = quality
+    
+    @property
+    def method(self):
+        return self.ptr.method
+    
+    @method.setter
+    def method(self, method):
+        self.ptr.method = method
 
     def validate(self):
         return lib.WebPValidateConfig(self.ptr) != 0
@@ -180,7 +191,7 @@ class WebPPicture:
         self.ptr.writer = ffi.addressof(lib, 'WebPMemoryWrite')
         self.ptr.custom_ptr = writer.ptr
         if lib.WebPEncode(config.ptr, self.ptr) == 0:
-            raise WebPError('encoding error: ' + self.ptr.error_code)
+            raise WebPError('encoding error: ' + str(self.ptr.error_code))
         return writer.to_webp_data()
 
     @staticmethod
